@@ -64,7 +64,9 @@ class Backend_Api:
     
     def _addNewIssue(self):
         global history
-        prompt = "Summarize the following in 10 words or less: " + messages[0]['content']
+        prompt = []
+        prompt.append({'role': 'system', 'content': 'You create a summary in less then 10 words'})
+        prompt.append({'role': 'user', 'content': messages[0]['content']})
         summary = ChatCompletion.create(
             messages= prompt,
             model="gpt-3.5-turbo",

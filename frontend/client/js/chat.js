@@ -32,6 +32,21 @@ const delete_conversations = async () => {
 const add_issue = async () => {
 	alert("Issue added");
 	$.ajax({
+		url: '/addIssue',
+		type: 'POST',
+		contentType: 'application/json',
+		success: function(response) {
+			console.log("SUCESS")
+		},
+		error: function(error) {
+			console.log(error);
+		}
+	});
+};
+
+const add_comments = async () => {
+	alert("Comments added");
+	$.ajax({
 		url: '/processIssue',
 		type: 'POST',
 		contentType: 'application/json',
