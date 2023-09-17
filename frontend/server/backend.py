@@ -17,15 +17,19 @@ from langchain.chains import RetrievalQAWithSourcesChain
 from langchain.chains.question_answering import load_qa_chain
 from langchain import OpenAI
 from langchain.vectorstores import Chroma
+import server.issues as issues
 
 
-index = None
 db = None
+history = []
+response = ""
+messages = None
+
 class Backend_Api:
 
     def __init__(self, bp, config: dict) -> None:
         global db
-        global index
+
         """
         Initialize the Backend_Api class.
         :param app: Flask application instance
@@ -36,6 +40,14 @@ class Backend_Api:
             '/backend-api/v2/conversation': {
                 'function': self._conversation,
                 'methods': ['POST']
+            },
+            '/processIssue': {
+                'function': self._addCommentToIssue,
+                'methods': ['POST']
+            },
+            '/addIssue': {
+                'function': self._addNewIssue,
+                'methods': ['POST']
             }
         }
         raw_documents = DirectoryLoader('./server/data').load()
@@ -43,7 +55,33 @@ class Backend_Api:
         documents = text_splitter.split_documents(raw_documents)
         db = Chroma.from_documents(documents, OpenAIEmbeddings())
 
+    def _addCommentToIssue(self):
+        global history
+        issues.addComment(messages[0]['content'], response)
+        print("added comment" + messages[0]['content'] + response)
+        history = []
+        return "ok"
+    
+    def _addNewIssue(self):
+        global history
+        prompt = "Summarize the following in 10 words or less: " + messages[0]['content']
+        summary = ChatCompletion.create(
+            messages= prompt,
+            model="gpt-3.5-turbo",
+            temperature=0,
+        )
+        issues.createIssue(summary, messages[0]['content'])
+        print("Issue created" + summary + messages[0]['content'])
+        history = []
+        return "ok"
+    
     def _conversation(self):
+        global history
+        global issueResolved
+        global issueNeverResolved
+        global response
+        global messages
+
         """  
         Handles the conversation route.  
 
@@ -52,6 +90,7 @@ class Backend_Api:
         conversation_id = request.json['conversation_id']
 
         try:
+            
             jailbreak = request.json['jailbreak']
             model = request.json['model']
             messages = build_messages(jailbreak)
@@ -68,15 +107,16 @@ class Backend_Api:
             \"\"\"
             Question: {qu}"""
 
+            history.append({'role': 'system', 'content': 'You answer questions about the IMAGE project.'})
+            history.append({'role': 'user', 'content': query})
+
             response = ChatCompletion.create(
-            messages=[
-                {'role': 'system', 'content': 'You answer questions about the IMAGE project.'},
-                {'role': 'user', 'content': query},
-            ],
+            messages=history,
             model="gpt-3.5-turbo",
             temperature=0,
             )
-            
+
+
             return Response(stream_with_context(generate_stream(response, jailbreak)), mimetype='text/event-stream')
 
         except Exception as e:

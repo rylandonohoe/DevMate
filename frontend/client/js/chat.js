@@ -29,6 +29,21 @@ const delete_conversations = async () => {
 	await new_conversation();
 };
 
+const add_issue = async () => {
+	alert("Issue added");
+	$.ajax({
+		url: '/processIssue',
+		type: 'POST',
+		contentType: 'application/json',
+		success: function(response) {
+			console.log("SUCESS")
+		},
+		error: function(error) {
+			console.log(error);
+		}
+	});
+};
+
 const handle_ask = async () => {
 	message_input.style.height = `80px`;
 	window.scrollTo(0, 0);

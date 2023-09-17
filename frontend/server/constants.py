@@ -1,3 +1,3 @@
-APIKEY = "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"
-GITKEY = "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"
-GITUSERNAME = "rianadutta"
+APIKEY = "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"
+GITKEY = "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"
+GITUSERNAME = "gablavoiie"

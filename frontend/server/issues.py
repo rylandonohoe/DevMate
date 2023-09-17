@@ -1,5 +1,5 @@
 import requests
-import constants
+import server.constants as constants
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
@@ -7,7 +7,9 @@ from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
 
 lemmatizer = WordNetLemmatizer()
 stop_words = set(stopwords.words('english'))
@@ -42,6 +44,7 @@ def preprocess_text(text):
 
 
 def addComment(description, solution):
+    print("will try to find a similar comment")
     api_url = f"https://api.github.com/repos/rianadutta/IMAGE-server/issues"
     session = requests.Session()
     session.auth = (username, access_token)
@@ -64,6 +67,7 @@ def addComment(description, solution):
             similarity_threshold = 0.5
 
             if cosine_sim >= similarity_threshold:
+                print("found matching issue")
                 issue_number = issue['number']
                 comments_url = f'https://api.github.com/repos/rianadutta/IMAGE-server/issues/{issue_number}/comments'
                 payload = {
@@ -73,10 +77,4 @@ def addComment(description, solution):
                     'Authorization': f'token {access_token}'
                 }
                 response = requests.post(comments_url, json=payload, headers=headers)
-
-               
-            
-             
-
-addComment("cannot update preprocessor names", "update name through ssh")
 
