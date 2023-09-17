@@ -34,6 +34,11 @@
 }
 
 .sidebar .top {
+	overflow: hidden;
+	padding-right: 8px;
+}
+
+.sidebar .topPortion {
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;

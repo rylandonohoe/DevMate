@@ -41,16 +41,22 @@
 	<body data-urlprefix="{{ url_prefix}}">
 		<div class="main-container">
 			<div class="box sidebar">
-				<div class="top">
-					<button class="button" onclick="add_issue()">
-						<i class="fa-regular fa-file-text"></i>
-						<span>Issue Resolved?</span>
+				<div class="topPortion">
+					<button class="button" onclick="issue_resolved()">
+						<i class="fa-regular fa-check-square"></i>
+						<span>Issue Resolved</span>
+					</button>
+					<button class="button" onclick="issue_ongiong()">
+						<i class="fa-regular fa-square"></i>
+						<span>Issue Ongoing</span>
 					</button>
 					<button class="button" onclick="new_conversation()">
 						<i class="fa-regular fa-plus"></i>
 						<span>New DevMate Chat</span>
 					</button>
+					<div class="top">
 					<div class="spinner"></div>
+					</div>
 				</div>
 				<div class="sidebar-footer">
 					<button class="button" onclick="delete_conversations()">
