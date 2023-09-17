@@ -1,6 +1,6 @@
 import os
 import sys
-import constants
+import server.constants as constants
 import langchain
 from langchain.document_loaders import TextLoader, DirectoryLoader
 from langchain.indexes import VectorstoreIndexCreator
@@ -10,16 +10,38 @@ from langchain.embeddings import OpenAIEmbeddings, CacheBackedEmbeddings
 
 os.environ["OPENAI_API_KEY"] = constants.APIKEY
 
-# Define a cache to store embeddings
-embedding_cache = {}
+def initialize_embeddings():
+    fs = LocalFileStore("./test_cache/")
 
-# Initialize Langchain
-underlying_embeddings = OpenAIEmbeddings()
-store = InMemoryStore()
-fs = LocalFileStore("./cache/")
+    underlying_embeddings = OpenAIEmbeddings()
+
+    embedder2 = CacheBackedEmbeddings.from_bytes_store(
+    underlying_embeddings, fs, namespace=underlying_embeddings.model)
+
+    loader = DirectoryLoader("data", silent_errors=True, loader_cls=TextLoader)
+    index = VectorstoreIndexCreator(embedding=underlying_embeddings).from_loaders([loader])
+
+def askQuery(question):
+    
+    response = index.query(question, llm=ChatOpenAI())
+    return response
+
+#initialize_embeddings()
+
+"""
+    # Initialize Langchain
+    underlying_embeddings = OpenAIEmbeddings()
+
+    fs = LocalFileStore("./cache/")
+
+    cached_embedder = CacheBackedEmbeddings.from_bytes_store(underlying_embeddings, fs, namespace=underlying_embeddings.model)
+
+
+    store = InMemoryStore()
+    fs = LocalFileStore("./cache/")
 
 loader = DirectoryLoader("data", silent_errors=True, loader_cls=TextLoader)
-index = VectorstoreIndexCreator().from_loaders([loader])
+
 
 while True:
     query = input("Enter your query: ")
@@ -40,3 +62,5 @@ while True:
         print(cached_embedding)
     else:
         print("Embedding not found in cache. Something went wrong during computation.")
+
+"""

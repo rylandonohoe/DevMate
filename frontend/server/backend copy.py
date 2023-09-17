@@ -16,15 +16,13 @@ from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQAWithSourcesChain
 from langchain.chains.question_answering import load_qa_chain
 from langchain import OpenAI
-from langchain.vectorstores import Chroma
 
 
 index = None
-db = None
+
 class Backend_Api:
 
     def __init__(self, bp, config: dict) -> None:
-        global db
         global index
         """
         Initialize the Backend_Api class.
@@ -38,10 +36,22 @@ class Backend_Api:
                 'methods': ['POST']
             }
         }
-        raw_documents = DirectoryLoader('./server/data').load()
-        text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-        documents = text_splitter.split_documents(raw_documents)
-        db = Chroma.from_documents(documents, OpenAIEmbeddings())
+        loader = DirectoryLoader("./server/data", loader_cls=TextLoader)
+        data = loader.load()
+        text_splitter = CharacterTextSplitter(separator='\n', 
+                                      chunk_size=1000, 
+                                      chunk_overlap=200)
+        
+        docs = text_splitter.split_documents(data)
+        embeddings = OpenAIEmbeddings()
+
+        loader = TextLoader('./server/data/github_issues.txt')
+        index = VectorstoreIndexCreator().from_loaders([loader])
+        vectorStore_openAI = FAISS.from_documents(docs, embeddings)
+        with open("faiss_store_openai.pkl", "wb") as f:
+            pickle.dump(vectorStore_openAI, f)
+
+        # print(index.query(query, llm=ChatOpenAI()))
 
     def _conversation(self):
         """  
@@ -57,27 +67,33 @@ class Backend_Api:
             messages = build_messages(jailbreak)
 
             # Generate response
-            qu = messages[len(messages) - 1]['content']
-            docs = db.similarity_search(qu)
-            content = docs[0].page_content
-
-            query = f"""Use the collection of data from IMAGE as a reference but don't EVER tell the user you know about the IMAGEData. IMAGE is a research project at McGill University. The IMAGEData contains the GitHub wiki, the issues and source code. 
-            IMAGEData:
-            \"\"\"
-            {content}
-            \"\"\"
-            Question: {qu}"""
-
+            """
             response = ChatCompletion.create(
-            messages=[
-                {'role': 'system', 'content': 'You answer questions about the IMAGE project.'},
-                {'role': 'user', 'content': query},
-            ],
-            model="gpt-3.5-turbo",
-            temperature=0,
-            )
-            
-            return Response(stream_with_context(generate_stream(response, jailbreak)), mimetype='text/event-stream')
+                model=model,
+                chatId=conversation_id,
+                messages=messages
+            )"""
+            #print(messages)
+            #response = index.query("History of the convo" + str(messages) + "New message" + messages[len(messages) - 1]['content'], llm=ChatOpenAI())
+
+            with open("faiss_store_openai.pkl", "rb") as f:
+                VectorStore = pickle.load(f)
+
+            llm=ChatOpenAI(model="text-davinci-003")
+            chain = RetrievalQAWithSourcesChain.from_llm(llm=llm, retriever=VectorStore.as_retriever())
+
+            response = chain({"question": messages[len(messages) - 1]['content']}, return_only_outputs=True)
+            #response = chain.run("What's the temperature in Boise, Idaho?")
+            print(response)
+            """
+            print(chain)
+            print(chain.run("HIIII"))
+            print(messages[len(messages) - 1]['content'])
+            #response = chain({"question": messages[len(messages) - 1]['content']}, return_only_outputs=True)
+            #print(response)
+            print(chain.run(messages[len(messages) - 1]['content']))
+            """
+            return Response(stream_with_context(generate_stream(response['answer'], jailbreak)), mimetype='text/event-stream')
 
         except Exception as e:
             print(e)

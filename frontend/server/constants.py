@@ -1,0 +1,3 @@
+APIKEY = "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"
+GITKEY = "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"
+GITUSERNAME = "rianadutta"
