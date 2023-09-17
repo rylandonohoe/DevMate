@@ -1,0 +1,55 @@
+Issue #769: Create README.md for celebrity detector  Assigned to: jaydeepsingh25Issue #768: Create README.md for caption recognition  Assigned to: jaydeepsingh25Issue #767: Created README.md for clothes detection  Assigned to: jaydeepsingh25Issue #766: Update README.md for expression recognition  Assigned to: jaydeepsingh25Issue #765: People handler  Assigned to: jaydeepsingh25Issue #755: Segment repetition in French renderings  Assigned to: notkaramelComment by jeffbl on issue #755:
+  Moving to backlog since @notkaramel indicates this is a rare case, and does not know what is causing this. Will need to prioritize if we see it more than very occasionally, since it is very disruptive!
+Issue #754: Photos: indicate when photo is black+white  Issue #747: Integrate activity preprocessor results into photo-audio handler  Comment by jeffbl on issue #747:
+  Do you mean integrating the results of the action preprocessor into one of the handlers so that end-users get information about the detected activities? If so, suggest title change to "Integrate activity preprocessor results into photo-audio handler"
+Comment by jeffbl on issue #747:
+  @gabriellemacinnes I have updated the title as suggested above. Are you still working on this, or should it be moved to the backlog? (ping to @rbazin as an FYI on status)
+
+From discussions, my understanding is that this involves:
+
+- in photo-audio handler, look to see if there are any activity recognition results for each of the people detected
+- if above a reasonable confidence threshhold, (80% ?) change the readout for that person to something like "a person, who may be doing activity [activity classification]" (syntax TBD with @Cybernide)
+
+Note that this would be fine to merge into main once tested, since if we don't run the activity preprocessor on pegasus, it won't impact the results at all. That way, we can run it on unicorn for testing until we're comfortable with the results, then just spin up the activity recognizer on pegasus when we're ready.
+Issue #742: Verify correct behaviour when scaling handlers & preprocessors  Issue #741: Object detection/semseg in renderings: order by area consumed?  Assigned to: JRegimbalComment by Cybernide on issue #741:
+  I think this is something we can open to discussion - I'll make it a note in a UX meeting
+Issue #740: Semantic Segmentation: investigate segment anything and other newer alternatives  Issue #730: autour preprocessor: needs debug output  Assigned to: jaydeepsingh25Issue #729: collage preprocessor: needs debug output  Assigned to: jaydeepsingh25Issue #727: Allow clients to query IMAGE servers for information about the experiences they can produce  Comment by JRegimbal on issue #727:
+  @Cybernide interested in hearing your thoughts on this, @jeffbl just pinging so you know this exists.
+Comment by Cybernide on issue #727:
+  This makes sense. I can help you come up with some ideas about how to present this information, if you'd like.
+Issue #725: STORY: As a charts preprocessor developer, I want to improve the questioning process of the model, so that it produces chart summaries that will help make the results meaningful when conveyed to IMAGE users who are blind or low vision.  Comment by Cybernide on issue #725:
+  @jeffbl Romain is heads down on some writing for Jeremy. Moving to next sprint.
+Comment by Cybernide on issue #725:
+  @jeffbl Unsure of when this is going to happen - there are a few items to get out of the way first. @rbazin and I think this is best as a backlog item
+Issue #721: STORY: As a 2diy experience designer, I want to prototype an interactive map with a haply 2diy, so that the team can test the ideas for potential integration into IMAGE.  Assigned to: samueljohnsegun148Comment by Cybernide on issue #721:
+  @jeffbl Moving story to next sprint
+Comment by Cybernide on issue #721:
+  Hi Segun, please contact me soon so we can start planning our participatory design activities
+Comment by samueljohnsegun148 on issue #721:
+  Sure, I have messaged Corentin on this and I am hoping to hear back soon so we can begin. 
+Issue #684: Upgrade ESPNet TTS services  Issue #679: IMAGE not working with AVIF graphics  Comment by JRegimbal on issue #679:
+  After looking through several containers, it seems that AVIF graphics are [not supported by opencv](https://github.com/opencv/opencv/issues/19271) which is used in nearly all our preprocessors. It is likely that it or the preprocessors are not failing gracefully when given an AVIF graphic. Is this format particularly common on the internet now?
+Comment by jeffbl on issue #679:
+  Moving away from opencv sounds messy. An alternative way of dealing with this would be for the orchestrator to convert it to jpg or another usable format before passing it along.
+Comment by JRegimbal on issue #679:
+  I don't particularly like the orchestrator doing extra tasks on the fly like this. Putting aside anything conceptual, it needs to run with more permissions than other components and I do not think we should be making a habit of adding functionality running with those permissions. Maybe restricting the kinds of graphic types supported as inputs so non-supported types such as AVIF are rejected?
+Comment by jeffbl on issue #679:
+  Looks like AVIF is used by fewer than 1% of websites:
+https://w3techs.com/technologies/details/im-avif
+
+Leaving in backlog. Should be fixed, but agree needs more discussion.
+Comment by jeffbl on issue #679:
+  Looks like AVIF is now supported by OpenCV, so this might just mean updating our OpenCV version to v4.8.0 or later
+https://github.com/opencv/opencv/issues/19271
+https://opencv.org/blog/2023/07/02/opencv-4-8-0/
+
+Issue #646: Add collage information to photo handler  Assigned to: CybernideComment by jeffbl on issue #646:
+  @rianadutta would like to take a crack at implementing this, so I'm moving it into May08 sprint and adding @rianadutta as an assignee so that she sees this.. @Cybernide please comment with whether you're ok with this approach/text, or ping me if need to discuss.
+Comment by Cybernide on issue #646:
+  "This may be a collage of multiple photos, so the results of this interpretation may be confusing." I think is a little more specific.
+Comment by Cybernide on issue #646:
+  Dropping my assignment since I think this is the right wording
+Issue #642: As a person who is visually impaired, I want to have access to an auditory and tactile experience of texture in paintings, so that I can appreciate paintings for which textural content is essential to understanding the artwork.  Issue #641: STORY: As an artist, I want to create a manually curated multi-modal experience of the painting Starry Night, so that individuals who are visually impaired can appreciate an immersive art experience.  Comment by jeffbl on issue #641:
+  @gablavoiie moving to backlog until we have time to discuss how things should go during your internship this summer. Don't hesitate to continue as you can, and don't hesitate to ping me if you need help / have questions.
+Issue #640: As a IMAGE community blind stock trader, I want to identify the three tools I need the most when making stock trading decisions, so that I could facilitate my stock trading experience and make better trading decisions  Assigned to: lankwuitIssue #630: EPIC: As an IMAGE user who is blind, I want to receive a text-based overview of a chart, so that I can access a similar overview to what a sighted user would obtain from their first look at the chart.  Assigned to: rbazinIssue #626: Implement basic automatic testing for preprocessors, handlers  Issue #625: Collage preprocessor does not properly check for non-graphic inputs, likely comes too early in priority grouping  Assigned to: rianaduttaIssue #621: EPIC: As a person who is blind from birth, I have difficulty getting meaningful information from 2D projections of photographs. I want to experience the content of photographs as if the items in the photo are situated around me, including how far away they are.  Assigned to: emmanuelwilsonIssue #620: EPIC: As a blind or low-vision smartphone user, I want to be able to experience IMAGE's renderings of photos, maps, and charts even though I don't have a laptop or desktop computer, so that I can understand graphical content that would otherwise be inaccessible to me.  Assigned to: 21satvikIssue #619: EPIC: As a blind or low vision IMAGE user, I want to know about human action information in photographs, so that I can better understand what the people in a photograph are currently doing.  Issue #611: Set configurable preprocessor timeout on orchestrator  Assigned to: JRegimbalIssue #610: OCR fails on large photos  Assigned to: jaydeepsingh25Comment by jeffbl on issue #610:
+  @jaydeepsingh25 triaging to backlog since OCR is not currently in use for any production handlers. I'm still hoping this can be easily solved by setting some sort of cap on photo size before sending to azure, but I know it'll probably take a bit of time to investigate. Will bring back into a sprint when we have a driving need to deploy OCR in a handler.

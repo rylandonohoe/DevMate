@@ -1,0 +1,9 @@
+espnet==202207
+espnet_model_zoo==0.1.7
+Flask==2.2.5
+gunicorn==20.1.0
+jsonschema==4.4.0
+parallel_wavegan==0.5.5
+phonemizer
+typeguard==2.13.3
+num2words>=0.5.12
