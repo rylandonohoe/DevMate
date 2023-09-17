@@ -10,7 +10,6 @@ from langchain.embeddings import OpenAIEmbeddings, CacheBackedEmbeddings
 
 os.environ["OPENAI_API_KEY"] = constants.APIKEY
 
-
 # Define a cache to store embeddings
 embedding_cache = {}
 
@@ -18,13 +17,16 @@ embedding_cache = {}
 underlying_embeddings = OpenAIEmbeddings()
 store = InMemoryStore()
 fs = LocalFileStore("./cache/")
+
+loader = DirectoryLoader("data", silent_errors=True, loader_cls=TextLoader)
+index = VectorstoreIndexCreator().from_loaders([loader])
+
 while True:
     query = input("Enter your query: ")
 
     # Check if the embedding is in the cache, if not, compute and cache it
     if query not in embedding_cache:
-        loader = DirectoryLoader("data", silent_errors=True, loader_cls=TextLoader)
-        index = VectorstoreIndexCreator().from_loaders([loader])
+        
         embeddings = index.query(query, llm=ChatOpenAI())
         
         # Store the computed embedding in the cache
