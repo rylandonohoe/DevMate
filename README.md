@@ -1,4 +1,4 @@
-# DevMate
+# DevMate: An AI Assistant for Software Developers
 
 As software interns these past few summers, we have continually encountered challenges learning the tools, procedures, and commands specific to the company at which we were working. Navigating proprietary commands and facing undocumented bugs have always made for a steep learning curve. The company wiki that is available is often disorganized, scattered, and sometimes deprecated. A more organized and updated company wiki system would not only accelerate our onboarding process but also allow employees alike to work more efficiently and autonomously.
 
