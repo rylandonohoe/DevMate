@@ -1,5 +1,8 @@
 # DevMate: An AI Assistant for Software Developers
 
+![animmm](https://github.com/rylandonohoe/DevMate/assets/65625885/fcea115b-6a8a-475f-b6c1-ccdc124f1fdf)
+
+
 As software interns these past few summers, we have continually encountered challenges learning the tools, procedures, and commands specific to the company at which we were working. Navigating proprietary commands and facing undocumented bugs have always made for a steep learning curve. The company wiki that is available is often disorganized, scattered, and sometimes deprecated. A more organized and updated company wiki system would not only accelerate our onboarding process but also allow employees alike to work more efficiently and autonomously.
 
 To combat these hurdles, we set out to develop DevMate, an AI-powered assistant that integrates a finely-tuned chatbot with project board management. The chatbot is uniquely trained on a comprehensive set of resources: from wikis and code repositories to academic papers and project board issues. It creates embeddings, and uses caching and memory to store conversation history and optimize our requests. Our current proof of concept is specific to the IMAGE Project at McGill University’s Shared Reality Lab. This chatbot assistant can be applied to any organization’s documentation to provide their developers with a helpful aid in learning and navigating company software. It efficiently answers questions, provides direction, and offers interactive troubleshooting and debugging assistance.
